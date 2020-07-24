@@ -11,4 +11,4 @@ spec:
   type: LoadBalancer
   selector: 
     role: app
-    env: canary
+
