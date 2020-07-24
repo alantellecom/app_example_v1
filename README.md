@@ -1,3 +1,20 @@
+
+Binarios inclusos:
+
+curl -LO https://storage.googleapis.com/spinnaker-artifacts/spin/$(curl -s https://storage.googleapis.com/spinnaker-artifacts/spin/latest)/linux/amd64/spin
+
+Create cloud builder trigger
+
+Select Connect with repository e choose github (mirror) 
+
+Set the following trigger settings:
+Name: sample-app-tags
+Trigger type: Branch
+Tag (regex): ^master$
+Build configuration: Cloud Build configuration file (yaml or json)
+Cloud Build configuration file location: cloudbuild.yaml
+
+
 Ajustar informações nos scripts e rodar.
 
 1- setup_app_pipeline.sh
