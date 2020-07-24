@@ -1,0 +1,8 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag=gcr.io/_project_gcp/_image_name:_image_version', '.']
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', '-r', 'k8s/*', 'gs://spinnaker_manifests_bucket']
+images: ['gcr.io/_project_gcp/_image_name:_image_version']
+
+

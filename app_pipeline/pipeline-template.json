@@ -1,0 +1,222 @@
+{
+  "name": "Deploy-github-gke",
+  "application": "_app_name",
+  "id": "2650c7c9-dd0a-4f59-ab0d-9c96a34cd1bc",
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "parallel": true,
+  
+  "expectedArtifacts": [
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "reference": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "type": "gcs/object"
+      },
+      "id": "app-production-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "reference": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "type": "gcs/object"
+      },
+      "id": "service-production-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.docker",
+        "name": "gcr.io/_project_gcp/_image_name",
+        "reference": "gcr.io/_project_gcp/_image_name:_default_image_version",
+        "type": "docker/image",
+        "version": "_default_image_version"
+      },
+      "id": "docker-image-123",
+      "matchArtifact": {
+        "kind": "docker",
+        "name": "gcr.io/_project_gcp/_image_name",
+        "type": "docker/image"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "reference": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "type": "gcs/object"
+      },
+      "id": "app-canary-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "reference": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "type": "gcs/object"
+      },
+      "id": "service-canary-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true
+    }
+  ],
+
+  "stages": [
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "manifestArtifactAccount": "gcs-_project_gcp",
+      "manifestArtifactId": "app-canary-123",
+      "moniker": {
+        "app": "_app_name"
+      },
+      "name": "Deploy Canary App",
+      "refId": "1",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [
+        "docker-image-123"
+      ],
+      "requisiteStageRefIds": [],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "gcs-_project_gcp",
+      "manifestArtifactId": "service-canary-123",
+      "moniker": {
+        "app": "_app_name"
+      },
+      "name": "Deploy Canary Service",
+      "refId": "2",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "failPipeline": true,
+      "judgmentInputs": [],
+      "name": "Deploy to Production?",
+      "notifications": [],
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "1",
+        "2"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "manifestArtifactAccount": "gcs-_project_gcp",
+      "manifestArtifactId": "app-production-123",
+      "moniker": {
+        "app": "_app_name"
+      },
+      "name": "Deploy Production App",
+      "refId": "4",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [
+        "docker-image-123"
+      ],
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "gcs-_project_gcp",
+      "manifestArtifactId": "service-production-123",
+      "moniker": {
+        "app": "_app_name"
+      },
+      "name": "Deploy  Production Service",
+      "refId": "5",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "artifact",
+      "type": "deployManifest"
+    }
+  ],
+  "triggers": [
+    {
+      "account": "gcr",
+      "attributeConstraints": {},
+      "enabled": true,
+      "expectedArtifactIds": [
+        "docker-image-123"
+      ],
+      "organization": "_project_gcp",
+      "payloadConstraints": {
+ 
+        "tag": "gcr.io/_project_gcp/_image_name:.*"
+      },
+      "pubsubSystem": "google",
+      "registry": "gcr.io",
+      "repository": "_project_gcp/_image_name",
+      "subscriptionName": "gcr-triggers",
+      "tag": ".*",
+      "type": "pubsub"
+    }
+  ],
+  "updateTs": "1578510165903"
+}

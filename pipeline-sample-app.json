@@ -1,0 +1,222 @@
+{
+  "name": "Deploy-github-gke",
+  "application": "sample-app",
+  "id": "2650c7c9-dd0a-4f59-ab0d-9c96a34cd1bc",
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "parallel": true,
+  
+  "expectedArtifacts": [
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "reference": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "type": "gcs/object"
+      },
+      "id": "app-production-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-prod.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "reference": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "type": "gcs/object"
+      },
+      "id": "service-production-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.docker",
+        "name": "gcr.io/robotic-tide-284315/sample-app",
+        "reference": "gcr.io/robotic-tide-284315/sample-app:v1",
+        "type": "docker/image",
+        "version": "v1"
+      },
+      "id": "docker-image-123",
+      "matchArtifact": {
+        "kind": "docker",
+        "name": "gcr.io/robotic-tide-284315/sample-app",
+        "type": "docker/image"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true,
+      "usePriorExecution": false
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "reference": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "type": "gcs/object"
+      },
+      "id": "app-canary-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/deploy-canary.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true
+    },
+    {
+      "defaultArtifact": {
+        "kind": "default.gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "reference": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "type": "gcs/object"
+      },
+      "id": "service-canary-123",
+      "matchArtifact": {
+        "kind": "gcs",
+        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "type": "gcs/object"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": true
+    }
+  ],
+
+  "stages": [
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "manifestArtifactAccount": "gcs-robotic-tide-284315",
+      "manifestArtifactId": "app-canary-123",
+      "moniker": {
+        "app": "sample-app"
+      },
+      "name": "Deploy Canary App",
+      "refId": "1",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [
+        "docker-image-123"
+      ],
+      "requisiteStageRefIds": [],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "gcs-robotic-tide-284315",
+      "manifestArtifactId": "service-canary-123",
+      "moniker": {
+        "app": "sample-app"
+      },
+      "name": "Deploy Canary Service",
+      "refId": "2",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "failPipeline": true,
+      "judgmentInputs": [],
+      "name": "Deploy to Production?",
+      "notifications": [],
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "1",
+        "2"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": false,
+      "continuePipeline": false,
+      "failPipeline": true,
+      "manifestArtifactAccount": "gcs-robotic-tide-284315",
+      "manifestArtifactId": "app-production-123",
+      "moniker": {
+        "app": "sample-app"
+      },
+      "name": "Deploy Production App",
+      "refId": "4",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [
+        "docker-image-123"
+      ],
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "artifact",
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "gcs-robotic-tide-284315",
+      "manifestArtifactId": "service-production-123",
+      "moniker": {
+        "app": "sample-app"
+      },
+      "name": "Deploy  Production Service",
+      "refId": "5",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "artifact",
+      "type": "deployManifest"
+    }
+  ],
+  "triggers": [
+    {
+      "account": "gcr",
+      "attributeConstraints": {},
+      "enabled": true,
+      "expectedArtifactIds": [
+        "docker-image-123"
+      ],
+      "organization": "robotic-tide-284315",
+      "payloadConstraints": {
+ 
+        "tag": "gcr.io/robotic-tide-284315/sample-app:.*"
+      },
+      "pubsubSystem": "google",
+      "registry": "gcr.io",
+      "repository": "robotic-tide-284315/sample-app",
+      "subscriptionName": "gcr-triggers",
+      "tag": ".*",
+      "type": "pubsub"
+    }
+  ],
+  "updateTs": "1578510165903"
+}
