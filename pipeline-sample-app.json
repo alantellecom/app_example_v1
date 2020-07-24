@@ -26,23 +26,7 @@
       "usePriorArtifact": true,
       "usePriorExecution": false
     },
-    {
-      "defaultArtifact": {
-        "kind": "default.gcs",
-        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
-        "reference": "gs://spinnaker_manifests_bucket/service-prod.yml",
-        "type": "gcs/object"
-      },
-      "id": "service-production-123",
-      "matchArtifact": {
-        "kind": "gcs",
-        "name": "gs://spinnaker_manifests_bucket/service-prod.yml",
-        "type": "gcs/object"
-      },
-      "useDefaultArtifact": true,
-      "usePriorArtifact": true,
-      "usePriorExecution": false
-    },
+ 
     {
       "defaultArtifact": {
         "kind": "default.docker",
@@ -80,14 +64,14 @@
     {
       "defaultArtifact": {
         "kind": "default.gcs",
-        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
-        "reference": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "name": "gs://spinnaker_manifests_bucket/service.yml",
+        "reference": "gs://spinnaker_manifests_bucket/service.yml",
         "type": "gcs/object"
       },
-      "id": "service-canary-123",
+      "id": "service-123",
       "matchArtifact": {
         "kind": "gcs",
-        "name": "gs://spinnaker_manifests_bucket/service-canary.yml",
+        "name": "gs://spinnaker_manifests_bucket/service.yml",
         "type": "gcs/object"
       },
       "useDefaultArtifact": true,
@@ -124,11 +108,11 @@
       "account": "default",
       "cloudProvider": "kubernetes",
       "manifestArtifactAccount": "gcs-robotic-tide-284315",
-      "manifestArtifactId": "service-canary-123",
+      "manifestArtifactId": "service-123",
       "moniker": {
         "app": "sample-app"
       },
-      "name": "Deploy Canary Service",
+      "name": "Deploy Service",
       "refId": "2",
       "relationships": {
         "loadBalancers": [],
@@ -175,27 +159,8 @@
       ],
       "source": "artifact",
       "type": "deployManifest"
-    },
-    {
-      "account": "default",
-      "cloudProvider": "kubernetes",
-      "manifestArtifactAccount": "gcs-robotic-tide-284315",
-      "manifestArtifactId": "service-production-123",
-      "moniker": {
-        "app": "sample-app"
-      },
-      "name": "Deploy  Production Service",
-      "refId": "5",
-      "relationships": {
-        "loadBalancers": [],
-        "securityGroups": []
-      },
-      "requisiteStageRefIds": [
-        "3"
-      ],
-      "source": "artifact",
-      "type": "deployManifest"
     }
+
   ],
   "triggers": [
     {
